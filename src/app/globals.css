@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --paper: #f3efe6;
+  --panel: #faf7f1;
+  --ink: #1c2430;
+  --line: #ddd4c4;
+  --muted: #5d6673;
+  --signal: #0f6e62;
+  --signal-soft: #e5f3ef;
+  --amber: #8a5a12;
+  --amber-soft: #f8edd9;
+  --danger: #9d2c2c;
+  --danger-soft: #f8e4e1;
+  --rail: #172033;
+  --rail-ink: #f6f1e8;
+  --rail-muted: #b7c0cc;
+  --font-outfit: "Outfit", sans-serif;
+  --font-newsreader: "Newsreader", serif;
+}
+
+.dark {
+  --paper: #10151c;
+  --panel: #171e28;
+  --ink: #efe8dc;
+  --line: #2c3544;
+  --muted: #a7b0bc;
+  --signal: #8fd9cb;
+  --signal-soft: #16332e;
+  --amber: #e2b56a;
+  --amber-soft: #3a2c16;
+  --danger: #f0a8a4;
+  --danger-soft: #3d2222;
+  --rail: #0c1118;
+  --rail-ink: #efe8dc;
+  --rail-muted: #93a0b0;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-line: var(--line);
+  --color-muted: var(--muted);
+  --color-signal: var(--signal);
+  --color-signal-soft: var(--signal-soft);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-rail: var(--rail);
+  --color-rail-ink: var(--rail-ink);
+  --color-rail-muted: var(--rail-muted);
+  --font-sans: var(--font-outfit), sans-serif;
+  --font-serif: var(--font-newsreader), serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-outfit), sans-serif; }
+button, input, textarea, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+::selection { background: #cfe7e2; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .preview-swap { transition: none; }
+}
+
+.preview-swap { transition: opacity 160ms ease; }
+.desk-grid {
+  display: grid;
+  grid-template-columns: 272px minmax(0, 1fr) 320px;
+  min-height: calc(100vh - 64px);
+}
+@media (max-width: 1100px) {
+  .desk-grid { grid-template-columns: 1fr; }
+}
