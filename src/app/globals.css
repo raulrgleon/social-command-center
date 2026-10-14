@@ -75,6 +75,39 @@ button, input, textarea, select { font: inherit; color: inherit; }
   grid-template-columns: 272px minmax(0, 1fr) 320px;
   min-height: calc(100vh - 64px);
 }
+.desk-switch { display: none; }
 @media (max-width: 1100px) {
-  .desk-grid { grid-template-columns: 1fr; }
+  .desk-grid { display: block; }
+  .desk-switch {
+    position: sticky;
+    top: 108px;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    padding: 8px 12px;
+    backdrop-filter: blur(10px);
+  }
+  .desk-switch button {
+    min-height: 44px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    font-size: 14px;
+  }
+  .desk-switch button.is-on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .desk-grid > aside,
+  .desk-grid > main { display: none; }
+  .desk-grid[data-pane="networks"] > aside:first-of-type { display: block; }
+  .desk-grid[data-pane="write"] > main,
+  .desk-grid[data-pane="preview"] > main { display: block; }
+  .desk-grid[data-pane="write"] .desk-preview { display: none; }
+  .desk-grid[data-pane="preview"] > main > :not(.desk-preview) { display: none; }
+  .desk-grid[data-pane="send"] > aside:last-of-type { display: block; }
+  input, textarea, select { font-size: 16px; }
+}
+@media (max-width: 1100px) and (prefers-reduced-motion: reduce) {
+  .desk-switch { backdrop-filter: none; }
 }

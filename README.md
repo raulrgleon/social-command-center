@@ -77,6 +77,12 @@ docker compose up --build
 
 Compose levanta Postgres 17, Redis 7, MinIO, la aplicación en el puerto 3000 y un worker. La contraseña de Postgres del ejemplo es solo para ese archivo local. Cámbiala antes de exponer el servidor.
 
+## Producción
+
+La copia pública está en https://mesa.dnet.llc. Corre en el servidor de DNET, solo en `127.0.0.1:3240`, y entra por el túnel ya existente. Postgres y Redis no se publican al exterior. La configuración vive en `/data/mesa/runtime.env` y no está en git.
+
+`docker-compose.server.yml` es el archivo de ese servidor. No usa el Compose de ejemplo.
+
 ## Coolify
 
 Los pasos están en [docs/COOLIFY.md](docs/COOLIFY.md).

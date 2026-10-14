@@ -29,17 +29,17 @@ export function AppShell({ name, workspace, children }: { name: string; workspac
             <Link key={href} href={href} className={`rounded-full px-3 py-1.5 text-sm ${pathname === href ? "bg-ink text-paper" : "text-muted hover:text-ink"}`}>{label}</Link>
           ))}
         </nav>
-        <div className="flex items-center gap-3 text-sm">
-          <span className="hidden text-muted sm:inline">{workspace}</span>
-          <span>{name}</span>
-          <button className="rounded-full border border-line px-3 py-1" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>Tema</button>
-          <button className="rounded-full border border-line px-3 py-1" onClick={async () => { await fetch("/api/auth/logout", { method: "POST" }); router.push("/"); router.refresh(); }}>Salir</button>
+        <div className="flex items-center gap-2 text-sm">
+          <span className="hidden text-muted md:inline">{workspace}</span>
+          <span className="hidden max-w-32 truncate sm:inline">{name}</span>
+          <button className="min-h-11 rounded-full border border-line px-3 py-1" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>Tema</button>
+          <button className="min-h-11 rounded-full border border-line px-3 py-1" onClick={async () => { await fetch("/api/auth/logout", { method: "POST" }); router.push("/"); router.refresh(); }}>Salir</button>
         </div>
       </header>
-      <div className="flex gap-2 overflow-x-auto border-b border-line px-3 py-2 lg:hidden">
-        {LINKS.map(([href, label]) => <Link key={href} href={href} className="shrink-0 rounded-full border border-line px-3 py-1 text-sm">{label}</Link>)}
+      <div className="sticky top-16 z-20 flex gap-2 overflow-x-auto border-b border-line bg-paper/95 px-3 py-2 backdrop-blur lg:hidden">
+        {LINKS.map(([href, label]) => <Link key={href} href={href} className={`shrink-0 rounded-full border px-3 py-2 text-sm ${pathname === href ? "border-ink bg-ink text-paper" : "border-line"}`}>{label}</Link>)}
       </div>
-      {children}
+      <div className="pb-8">{children}</div>
     </div>
   );
 }

@@ -1,0 +1,51 @@
+# Este archivo se usa en el servidor de DNET.
+# No publica Postgres, Redis ni la aplicación fuera de localhost.
+
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    env_file: /data/mesa/runtime.env
+    environment:
+      POSTGRES_USER: mesa
+      POSTGRES_DB: mesa
+    volumes:
+      - /data/mesa/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mesa"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    mem_limit: 256m
+    cpus: 0.5
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    mem_limit: 64m
+    cpus: 0.25
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: /data/mesa/runtime.env
+    environment:
+      REDIS_URL: redis://redis:6379
+      DISABLE_INPROCESS_WORKER: "true"
+    ports:
+      - "127.0.0.1:3240:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    mem_limit: 768m
+    cpus: 1.0
+  worker:
+    build: .
+    restart: unless-stopped
+    env_file: /data/mesa/runtime.env
+    command: ["sh", "docker/start.sh", "worker"]
+    environment:
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+    mem_limit: 384m
+    cpus: 0.5

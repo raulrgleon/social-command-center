@@ -64,6 +64,7 @@ export function Composer({
   const [aiIdea, setAiIdea] = useState("");
   const [aiNote, setAiNote] = useState("");
   const [hidden, setHidden] = useState<string[]>([]);
+  const [pane, setPane] = useState<"write" | "preview" | "networks" | "send">("write");
 
   useEffect(() => {
     fetch("/api/counters").then((response) => response.json()).then((data) => {
@@ -206,7 +207,12 @@ export function Composer({
   const previewTitle = editing === "master" ? title : current.title;
 
   return (
-    <div className="desk-grid">
+    <div className="desk-grid" data-pane={pane}>
+      <nav className="desk-switch" aria-label="Partes del escritorio">
+        {([["write", "Escribir"], ["preview", "Vista"], ["networks", "Redes"], ["send", "Enviar"]] as const).map(([id, label]) => (
+          <button key={id} className={pane === id ? "is-on" : ""} onClick={() => setPane(id)}>{label}</button>
+        ))}
+      </nav>
       <aside className="bg-rail text-rail-ink">
         <div className="grid grid-cols-2 gap-2 border-b border-white/10 p-4 text-sm">
           <Stat label="Hoy" value={totals.localPublished + totals.externalPublished} />
@@ -221,7 +227,7 @@ export function Composer({
             const active = focus === item.id;
             return (
               <li key={item.id}>
-                <button className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left ${active ? "bg-white/10" : "hover:bg-white/5"}`} onClick={() => { setFocus(item.id); if (editing !== "master") setEditing(item.id); }}>
+                <button className={`flex min-h-11 w-full items-center gap-3 rounded-xl px-3 py-2 text-left ${active ? "bg-white/10" : "hover:bg-white/5"}`} onClick={() => { setFocus(item.id); if (editing !== "master") setEditing(item.id); if (window.innerWidth < 1100) setPane("preview"); }}>
                   <BrandIcon id={item.id} />
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center justify-between gap-2">
@@ -242,7 +248,7 @@ export function Composer({
       </aside>
 
       <main className="min-w-0 px-4 py-5 lg:px-8">
-        <div className="mb-4 flex flex-wrap items-center gap-2">
+        <div className="desk-write mb-4 flex flex-wrap items-center gap-2">
           <button className={`rounded-full px-3 py-1 text-sm ${editing === "master" ? "bg-ink text-paper" : "border border-line"}`} onClick={() => setEditing("master")}>Maestro</button>
           {versions.map((version) => (
             <button key={version.platformId} className={`rounded-full px-3 py-1 text-sm ${editing === version.platformId ? "bg-ink text-paper" : "border border-line"}`} onClick={() => { setEditing(version.platformId); setFocus(version.platformId); }}>
@@ -283,7 +289,7 @@ export function Composer({
           </div>
           {aiNote ? <p className="mt-3 text-sm text-muted">{aiNote}</p> : null}
         </section>
-        <section className="mt-6">
+        <section className="desk-preview mt-6">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="font-serif text-2xl">Vista en {platform?.name}</h2>
             <div className="flex gap-2">
@@ -309,8 +315,8 @@ export function Composer({
         <ul className="mt-3 max-h-72 space-y-2 overflow-auto">
           {accounts.filter((account) => account.platformId === focus || selected.includes(account.id)).concat(accounts.filter((account) => account.platformId !== focus && !selected.includes(account.id))).slice(0, 30).map((account) => (
             <li key={account.id}>
-              <label className="flex items-start gap-2 text-sm">
-                <input type="checkbox" checked={selected.includes(account.id)} onChange={(event) => setSelected(event.target.checked ? [...selected, account.id] : selected.filter((id) => id !== account.id))} />
+              <label className="flex min-h-11 items-start gap-3 py-1 text-sm">
+                <input className="mt-1 h-5 w-5" type="checkbox" checked={selected.includes(account.id)} onChange={(event) => setSelected(event.target.checked ? [...selected, account.id] : selected.filter((id) => id !== account.id))} />
                 <span>
                   <span className="block">{account.displayName}</span>
                   <span className="text-muted">{account.isDemo ? "Demostración" : account.status === "CONNECTED" ? "Conectada" : "Sin autorización"}{account.lastSyncAt ? ` · sync ${new Date(account.lastSyncAt).toLocaleString("es")}` : ""}</span>
@@ -322,9 +328,9 @@ export function Composer({
         <label className="mt-4 block text-sm text-muted" htmlFor="cuando">Programar</label>
         <input id="cuando" type="datetime-local" value={when} onChange={(event) => setWhen(event.target.value)} className="mt-1 w-full rounded-xl border border-line bg-paper px-3 py-2" />
         <div className="mt-4 grid gap-2">
-          <button className="rounded-full bg-signal px-4 py-2 text-white" onClick={() => void publish("now")}>Publicar ahora</button>
-          <button className="rounded-full border border-line px-4 py-2" onClick={() => void publish("schedule")}>Programar</button>
-          <button className="rounded-full border border-line px-4 py-2" onClick={() => void save()} disabled={saving}>{saving ? "Guardando…" : "Guardar borrador"}</button>
+          <button className="min-h-11 rounded-full bg-signal px-4 py-3 text-white" onClick={() => void publish("now")}>Publicar ahora</button>
+          <button className="min-h-11 rounded-full border border-line px-4 py-3" onClick={() => void publish("schedule")}>Programar</button>
+          <button className="min-h-11 rounded-full border border-line px-4 py-3" onClick={() => void save()} disabled={saving}>{saving ? "Guardando…" : "Guardar borrador"}</button>
           <button className="rounded-full border border-line px-4 py-2" onClick={async () => { const currentPost = await ensurePost(); await fetch(`/api/posts/${currentPost.id}/publish`, { method: "PUT" }); setNotice("Se creó una copia."); }}>Duplicar</button>
           <button className="rounded-full border border-line px-4 py-2" onClick={async () => {
             const name = window.prompt("Nombre de la plantilla");

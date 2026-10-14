@@ -49,6 +49,16 @@ export function CalendarBoard() {
         <input value={platform} onChange={(event) => setPlatform(event.target.value)} placeholder="facebook" className="ml-2 rounded-full border border-line bg-panel px-3 py-1" />
       </label>
       {message ? <p className="mt-3 text-sm">{message}</p> : null}
+      <ul className="mt-4 space-y-2 lg:hidden">
+        {posts.filter((post) => post.plannedFor).slice(0, 8).map((post) => (
+          <li key={post.id}>
+            <Link href={`/escritorio?post=${post.id}`} className="block rounded-2xl border border-line bg-panel px-3 py-3">
+              <span className="block font-medium">{post.title || "Sin título"}</span>
+              <span className="text-sm text-muted">{post.plannedFor ? format(new Date(post.plannedFor), "d MMM · HH:mm", { locale: es }) : ""} · {post.isDemo ? "Demostración · " : ""}{post.status}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
       <div className={`mt-4 grid gap-2 ${mode === "day" ? "grid-cols-1" : "grid-cols-2 md:grid-cols-7"}`}>
         {Array.from({ length: days }, (_, index) => {
           const day = addDays(start, index);
