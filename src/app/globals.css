@@ -57,12 +57,17 @@
   --font-serif: var(--font-newsreader), serif;
 }
 
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-outfit), sans-serif; }
-button, input, textarea, select { font: inherit; color: inherit; }
-:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
-::selection { background: #cfe7e2; }
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-outfit), sans-serif; }
+  button, input, textarea, select { font: inherit; }
+  :focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+  ::selection { background: #cfe7e2; }
+}
+
+.bg-ink { color: var(--paper); }
+.bg-signal { color: var(--paper); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
